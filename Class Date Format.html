@@ -1,0 +1,336 @@
+<html>
+
+<script>
+    //template for inheritence
+    Function.prototype.inheritsFrom = function(parentClassOrObject){ 
+        if (parentClassOrObject.constructor == Function) 
+        { 
+            //Normal Inheritance 
+            //alert('Normal Inheritance')
+            this.prototype = new parentClassOrObject;
+            this.prototype.constructor = this;
+            this.prototype.parent = parentClassOrObject.prototype;
+        } 
+        else 
+        { 
+            //Pure Virtual Inheritance 
+            //alert('Pure Virtual Inheritance')
+            this.prototype = parentClassOrObject;
+            this.prototype.constructor = this;
+            this.prototype.parent = parentClassOrObject;
+        } 
+        return this;
+    } 
+
+    //constructor
+    function date(data) {
+        
+        var options = {};
+
+        if (arguments[0]) options = arguments[0];
+
+        //overloading
+        var default_args = {
+            'date'      :   new Date()
+        }
+        
+        for (var index in default_args) {
+            if (typeof options[index] == "undefined") 
+                options[index] = default_args[index];
+        }            
+        
+        //encapsulacion 
+        //private variables
+        var hours;
+        var minutes;
+        
+        var _date = options['date'];
+        //public variables
+        //this.ampmFormat = format;
+        this.getHours = getHours;
+        this.getMinutes = getMinutes;
+        this.setHours = setHours;
+        this.setMinutes = setMinutes;
+        this.getDate = getDate;
+        this.setDate = setDate;
+
+        _constructor();
+
+        function _constructor() {
+            hours = _date.getHours();
+            minutes = _date.getMinutes();
+        }
+        
+        function getHours() {
+            return hours;
+        }
+
+        function getMinutes() {
+            return minutes;
+        }
+        
+        function setHours(hour) {
+            //alert(hour)
+            hours = hour;
+        }
+
+        function setMinutes(minute) {
+            minutes = minute;
+        }
+        
+        function getDate() {
+            return _date;
+        }
+
+        function setDate(date) {
+            return _date;
+        }
+    }
+
+    //inheritence using prototype
+    date.prototype.changeHours = function(hours) {
+        this.setHours(hours);
+    }
+    
+    date.prototype.addHour = function() {
+        this.setHours(this.getHours()+1);
+    }
+
+    //Polymorphism
+    date.prototype.toString = function() {
+        //return 'object' + arguments.callee.caller.toString();    
+        return 'object date';
+    }
+    
+    var format01 = new date({'date' : new Date(86400000)});
+    
+    var str = '';
+    
+    str += format01.toString();
+    str += '<br/>';
+    str += 'getHours ' + format01.getHours();
+    str += '<br/>';
+    str += 'getMinutes ' + format01.getMinutes();
+    str += '<br/>';
+    str += 'getDate ' + format01.getDate();
+    str += '<br/>';
+    format01.setHours(20);
+    str += 'getHours after setHours ' + format01.getHours();
+    str += '<br/>';
+    str += '<br/>';
+    
+    document.write(str);
+
+    ampmFormat.inheritsFrom(new date({'date' : new Date(86400000)}));
+    //ampmFormat.inheritsFrom(date);
+    function ampmFormat(data) {
+        
+        var _date = this.getDate();
+        var ampm;
+        this.ampmFormat = format;
+        this.getAmPm = getAmPm;
+
+        _constructor();
+
+        function _constructor() {
+            hours = _date.getHours();
+            minutes = _date.getMinutes();
+            ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+        }
+
+        function format() {
+            var strTime = hours + ':' + minutes + ' ' + ampm;
+            return strTime;
+        }
+
+        function getAmPm() {
+            return ampm;
+        }
+    }
+    
+    //Polymorphism
+    ampmFormat.prototype.toString = function() {
+        return 'object ampmFormat';
+        //return 'object' + arguments.callee.caller.toString();    
+    }
+    
+    //var format = new date({'date' : new Date(86400000)});
+    var format02 = new ampmFormat();
+    //format.ampmFormat();
+    
+    var str = '';
+    
+    str += format02.toString();
+    str += '<br/>';
+    str += 'getHours ' + format02.getHours();
+    str += '<br/>';
+    str += 'getMinutes ' + format02.getMinutes();
+    str += '<br/>';
+    str += 'getAmPm ' + format02.getAmPm();
+    str += '<br/>';
+    str += 'getDate ' + format02.getDate();
+    str += '<br/>';
+    format02.setHours(20);
+    str += 'getHours after setHours ' + format02.getHours();
+    str += '<br/>';
+    format02.changeHours(13);
+    str += 'getHours after changeHours ' + format02.getHours();
+    str += '<br/>';
+    format02.addHour();
+    str += 'getHours after addHour ' + format02.getHours();
+    str += '<br/>';
+    str += 'AM/PM Format : ' + format02.ampmFormat();
+    str += '<br/>';
+    str += '<br/>';
+    
+    document.write(str);
+
+    ampmFormat.inheritsFrom(new date());
+    ampmFormat.prototype.toString = function() {
+        return 'object ampmFormat';
+        //return 'object' + arguments.callee.caller.toString();    
+    }
+    var format03 = new ampmFormat();
+    
+    var str = '';
+    
+    str += format03.toString();
+    str += '<br/>';
+    str += 'getHours ' + format03.getHours();
+    str += '<br/>';
+    str += 'getMinutes ' + format03.getMinutes();
+    str += '<br/>';
+    str += 'getAmPm ' + format03.getAmPm();
+    str += '<br/>';
+    str += 'getDate ' + format03.getDate();
+    str += '<br/>';
+    str += 'getHours after setHours ' + format03.getHours();
+    str += '<br/>';
+    format03.setHours(20);
+    format03.changeHours(13);
+    str += 'getHours after changeHours ' + format03.getHours();
+    str += '<br/>';
+    format03.addHour();
+    str += 'getHours after addHour ' + format03.getHours();
+    str += '<br/>';
+    str += 'AM/PM Format : ' + format03.ampmFormat();
+    str += '<br/>';
+    str += '<br/>';
+    document.write(str);
+    
+    //herencia segunda forma
+    //childFormat.prototype = new dateFormat(new Date());
+    //childFormat.prototype.constructor = childFormat;
+    //childFormat.prototype.parent = dateFormat.prototype;    
+    
+    _24Format.inheritsFrom(new date());
+    //Normal Inheritance 
+    //childFormat.inheritsFrom(date);
+    //Pure Virtual Inheritance 
+    //childFormat.inheritsFrom(date.prototype);
+    
+    function _24Format(data) {
+        
+        var _date = this.getDate();
+        this._24Format = format;
+
+        _constructor();
+
+        function _constructor() {
+            hours = _date.getHours();
+            minutes = _date.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+        }
+
+        function format() {
+            var strTime = hours + ':' + minutes;
+            return strTime;
+        }
+    }
+
+    //Polymorphism
+    _24Format.prototype.toString = function() {
+        return 'object _24Format';
+        //return 'object' + arguments.callee.caller.toString();    
+    }
+    
+    var format04 = new _24Format();
+    
+    var str = '';
+    
+    str += format04.toString();
+    str += '<br/>';
+    str += 'getHours ' + format04.getHours();
+    str += '<br/>';
+    str += 'getMinutes ' + format04.getMinutes();
+    str += '<br/>';
+    str += 'getDate ' + format04.getDate();
+    str += '<br/>';
+    str += 'getHours after setHours ' + format04.getHours();
+    str += '<br/>';
+    format04.setHours(20);
+    format04.changeHours(13);
+    str += 'getHours after changeHours ' + format04.getHours();
+    str += '<br/>';
+    format04.addHour();
+    str += 'getHours after addHour ' + format04.getHours();
+    str += '<br/>';
+    str += '24 Hours Format: ' + format04._24Format();
+    str += '<br/>';
+    str += '<br/>';
+    document.write(str);
+
+    otherFormat.inheritsFrom(new date());
+    function otherFormat(data) {
+        
+        var _date = this.getDate();
+        this.otherFormat = format;
+
+        _constructor();
+
+        function _constructor() {
+            hours = _date.getHours();
+            minutes = _date.getMinutes();
+        }
+
+        function format() {
+            var strTime = hours + ':' + minutes;
+            return strTime;
+        }
+    }
+
+    otherFormat.prototype.toString = function() {
+        return 'object otherFormat';
+    }
+     
+    var format05 = new otherFormat();
+
+    var array = new Array();
+    //array[0] = format01;
+    //array[1] = format02;
+    //array[2] = format03;
+    //array[3] = format04;
+    //array[4] = format05;
+    array.push(format01);
+    array.push(format02);
+    array.push(format03);
+    array.push(format04);
+    array.push(format05);
+	
+    var str = '';
+    for (var i in array) {
+       str += 'Polymorphism ' + array[i].toString();
+       str += '<br/>';
+    } 
+    document.write(str);
+       
+</script>
+
+
+</html>
+

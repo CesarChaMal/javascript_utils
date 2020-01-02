@@ -1,0 +1,200 @@
+<html>
+
+<script>
+	System = function(){}
+
+	System.History = function(){}
+
+	System.History.Go = function(pos)
+	{
+		window.history.go(pos);
+		return false;
+	}
+
+	System.History.Back = function()
+	{
+		window.history.back()	
+	}
+
+	System.History.Forward = function()
+	{
+		window.history.forward()
+	}
+	
+	System.Browser = function(){}
+
+	System.Browser.undefined = 0;
+	System.Browser.Opera = 1;
+	System.Browser.FireFox = 2;
+	System.Browser.Netscape = 3;
+	System.Browser.MSIE = 4;
+	System.Browser.MSIEMac = 5;
+	System.Browser.Dom = 6;
+	System.Browser.Safari = 7;
+
+	System.Browser.Detect = function ()
+	{	
+		var brow = System.Browser.undefined
+		if(window.showHelp)
+		{	brow = System.Browser.MSIE;//browser = internet explorer
+			if(!window.attachEvent) 
+				brow = System.Browser.MSIEMac//browser = internet explorer para mac
+		}	
+
+		if(document.createElementNS) 
+			brow = System.Browser.Dom;//browser = dom
+		
+		if(navigator.userAgent.indexOf("afari") > -1)
+			brow = System.Browser.Safari;//browser = safari*/
+		
+		if(window.opera || navigator.userAgent.indexOf("pera") > -1) 
+			brow = System.Browser.Opera;//browser = opera
+		else
+		{	if((window) && (window.netscape) && (window.netscape.security))
+				brow = navigator.userAgent.indexOf("irefox") > -1 ? System.Browser.FireFox : System.Browser.Netscape			
+		}	
+		return brow;
+	}
+	
+    var nav4 = window.Event ? true : false;
+	MiPage = function(){}
+    MiPage.acceptNum = function(evt)
+	{
+		if(System.Browser.Detect()==System.Browser.FireFox || System.Browser.Detect()==System.Browser.Netscape || System.Browser.Detect()==System.Browser.Opera)
+			browser = 1;
+		else{
+			browser = 0;
+		}
+		//alert(nav4)
+		//var key = nav4 ? evt.which : evt.keyCode;
+		if(nav4){
+			var key = browser ? evt.which : evt.keyCode;
+		}
+		//alert(evt.which);
+		//alert(evt.keyCode);
+		//alert(key)
+
+		return (key <= 13 || (key >= 48 && key <= 57));
+	}        
+	
+    MiPage.cancelBack = function(evt)
+	{
+		if(System.Browser.Detect()==System.Browser.FireFox || System.Browser.Detect()==System.Browser.Netscape || System.Browser.Detect()==System.Browser.Opera)
+			browser = 1;
+		else{
+			browser = 0;
+		}
+
+		if(nav4){
+			var key = browser ? evt.which : evt.keyCode;
+			var element = browser ? evt.target : evt.srcElement;
+		}
+
+		var leftArrowKey = 37;
+		var rightArrowKey = 39;
+		var backSpaceKey = 8;
+		var escKey = 27
+
+		//event
+		//alert(evt)
+		
+		//key stroke
+		//alert(key)
+		
+		//alt key pressed
+		//alert(evt.altKey)
+		
+		//element source from the event
+		//alert(element)
+		//alert(typeof element)
+
+		//alert("To String: " + element.toString())
+		//alert("Es textfield: " + (element.toString() == "[object HTMLInputElement]"))
+		//alert("Es select: " + (element.toString() == "[object HTMLSelectElement]"))
+		
+		//only works for ie and does not really work when we have the readonly property
+		//alert(element.isTextEdit)
+		//alert(element.readOnly)
+		//boolean type return for readonly if exits returns true if not false
+		//alert(typeof element.readOnly)
+		//alert(element.disabled)
+		//alert(element.getAttribute("readonly"))
+		//string type return for element.getAttribute("readonly") because was set like readonly="true" or like readonly=true so you need to convert to boolean if exits returns the string set if not returns object type null
+		//alert(typeof element.getAttribute("readonly"))
+		//returns true
+		//alert(typeof Boolean(element.getAttribute("readonly")))
+		//returns true
+		//alert(typeof !!element.getAttribute("readonly"))
+		//alert(element.getAttribute("disabled"))
+		//element form
+		//alert(element.form)
+	
+		if ( 
+			//backspace key pressed and disabled for all form and non form elements
+			//(key == backSpaceKey && (element.form == null || element.readOnly == false)) ||
+			//backspace key pressed and disabled for only select elements
+			//this does not works because select does not have the readonly attribute
+			//(key == backSpaceKey && element.toString() == "[object HTMLSelectElement]" && (element.form == null || element.readOnly == false)) ||
+			//backspace key pressed and disabled for only select elements
+			(key == backSpaceKey && element.toString() == "[object HTMLSelectElement]") ||
+			//alt + left arrow keys pressed and disabled
+			(key == leftArrowKey && evt.altKey) || 
+			//alt + right keys arrow pressed and disabled
+			(key == rightArrowKey && evt.altKey) || 
+			//escape key pressed and disabled
+			key == escKey 
+			)
+		{
+			//alert(evt.cancelBubble)
+			if(nav4){
+				evt.cancelBubble = true;
+			} else {
+				evt.stopPropagation()
+			}	
+			return false;
+		}
+	}
+		
+</script>
+
+<!-- <body onkeydown="cancelBack()"> -->
+<body onkeydown="return MiPage.cancelBack(event)">
+<!-- <body> -->
+
+<form>
+	<p>test disable back, forward and backspace <input type="text" name="txtfield"></p>
+	<!-- <p>test disable back, forward and backspace <input type="text" name="txtfield" onkeydown="return MiPage.cancelBack(event)"></p> -->
+	<!-- <p>test disable back, forward and backspace <input type="text" name="txtfield" onkeydown="return MiPage.cancelBack(event)" readonly="true"></p> -->
+	<!-- <p>test disable back, forward and backspace <input type="text" name="txtfield" onkeydown="return MiPage.cancelBack(event)" disabled="true"></p> -->
+	
+	<p>test disable letters <input type="text" name="txtfield2" onkeypress="return MiPage.acceptNum(event)"></p>
+	
+	<p>test <input type="text" name="txtfield3"></p>
+	
+	<p> test disable back, forward and backspace
+	<select name="dropdown" id="dropdown">
+		<option value="1"> 1 </option>
+		<option value="2"> 2 </option>
+		<option value="3" selected> 3 </option>
+		<option value="4"> 4 </option>
+		<option value="5"> 5 </option>
+	</select> 
+	</p>
+	
+	<!-- 
+	<p> test disable back, forward and backspace
+	<select name="dropdown" id="dropdown" onkeydown="return MiPage.cancelBack(event)">
+		<option value="1"> 1 </option>
+		<option value="2"> 2 </option>
+		<option value="3" selected> 3 </option>
+		<option value="4"> 4 </option>
+		<option value="5"> 5 </option>
+	</select> 
+	</p>
+	-->
+	
+	<br>
+</form>
+
+</html>
+
